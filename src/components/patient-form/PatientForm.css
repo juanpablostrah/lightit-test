@@ -1,59 +1,63 @@
-.input {
-	border: 1px solid #ccc;
-	border-radius: 10px;
-	width: 400px;
-	padding: 12px;
-	box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.25);
-	border-radius: 4px;
-	box-sizing: border-box;
-	margin-top: 2px;
-	margin-bottom: 2px;
-	resize: vertical;
-	font-weight: 600;
-	font-size: 14px;
-	line-height: 20px;
-	font-family: "Poppins", sans-serif;
-	letter-spacing: 0.02em;
+.form-container {
+	width: 100%;
 }
 
-.button {
-	color: #a421f9;
-	margin: 20px;
-	width: 45px;
-	height: 45px;
-	border-radius: 100%;
-	border: none;
-	background-color: #ede3f4;
-}
-
-.input-div {
+.flex {
 	display: flex;
 	align-items: center;
-	justify-content: center;
-	margin-bottom: 10px;
+	justify-content: space-between;
 }
 
 .flex-column {
 	display: flex;
-	align-items: center;
+	align-items: flex-start;
 	flex-direction: column;
 }
 
+.flex-center {
+	display: flex;
+	align-items: flex-start;
+	justify-content: center;
+}
+
+.align-center {
+	align-items: center;
+}
+
+.m-left {
+	margin-left: 35px;
+}
+
+.m-right {
+	margin-right: 10px;
+}
+
+.m-bottom {
+	margin-bottom: 10px;
+}
+
+.label {
+	width: 120px;
+}
+
+.input,
 .textarea {
 	border: 1px solid #ccc;
 	border-radius: 10px;
-	width: 400px;
+	width: 800px;
 	padding: 12px;
 	box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.25);
-	border-radius: 4px;
 	box-sizing: border-box;
 	margin-top: 2px;
-	margin-bottom: 2px;
+	margin-bottom: 10px;
 	font-weight: 600;
 	font-size: 14px;
 	line-height: 20px;
 	font-family: "Poppins", sans-serif;
 	letter-spacing: 0.02em;
+}
+
+.textarea {
 	resize: none;
 	overflow: hidden;
 }
@@ -62,7 +66,29 @@
 	border: 1px solid red;
 }
 
+.button {
+	color: #a421f9;
+	margin: 20px;
+	width: 150px;
+	height: 40px;
+	border-radius: 20px;
+	border: none;
+	background-color: #ede3f4;
+	font-weight: bolder;
+	font-size: inherit;
+	display: flex;
+	align-items: center;
+	justify-content: space-evenly;
+}
+
 .warning-message {
 	margin-top: -18px;
 	color: #e34f4f;
+}
+
+.avatar-form {
+	width: 200px;
+	height: 200px;
+	border-radius: 50%;
+	object-fit: cover;
 }

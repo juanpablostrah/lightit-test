@@ -1,37 +1,36 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PatientCard from "../patient-card/PatientCard";
 import "./PatientList.css";
 
 interface PatientListProps {
-	patients: string[];
+	patients: Patient[];
 	onDelete: (index: number) => void;
-	onEdit: (index: number, newPatient: string) => void;
-	originalPatients: string[];
+	onEdit: (index: number, newPatient: Patient) => void;
+	originalPatients: Patient[];
 }
 
-interface Patient {
-	id: number;
+export interface Patient {
 	name: string;
-	age: number;
-	condition: string;
+	description: string;
+	avatar: string;
+	id: string;
 }
 
-const CardList = ({
+const PatientList = ({
 	patients,
 	onDelete,
 	onEdit,
 	originalPatients,
 }: PatientListProps) => {
-	const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
 	const [modalOpen, setModalOpen] = useState<boolean>(false);
 
 	return (
 		<div className="card-list">
-			{patients.map((patient, index) => {
+			{patients.map((patient) => {
 				const originalIndex = originalPatients.indexOf(patient);
 				return (
 					<PatientCard
-						key={index}
+						key={patient.id}
 						patient={patient}
 						onDelete={() => onDelete(originalIndex)}
 						onEdit={(newPatient) => onEdit(originalIndex, newPatient)}
@@ -42,4 +41,4 @@ const CardList = ({
 	);
 };
 
-export default CardList;
+export default PatientList;

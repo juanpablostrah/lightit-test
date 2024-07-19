@@ -52,11 +52,30 @@
 	right: 8px;
 }
 
+.trash-icon:hover {
+	background-color: #f0a0a0;
+}
+
 .edit-icon {
 	color: #0f0be6;
 	background-color: #d3d3e0;
 	bottom: 8px;
 	right: 8px;
+}
+
+.edit-icon:hover {
+	background-color: #b0b0e0;
+}
+
+.expand-icon {
+	color: #000;
+	background-color: #e0e0e0;
+	bottom: 8px;
+	left: 8px;
+}
+
+.expand-icon:hover {
+	background-color: #c0c0c0;
 }
 
 .text-area-edit {
@@ -92,4 +111,29 @@
 .cancel {
 	color: #a421f9;
 	background-color: #ede3f4;
+}
+
+.avatar {
+	width: 100px;
+	height: 100px;
+	border-radius: 50%;
+	object-fit: cover;
+	margin-bottom: 15px;
+}
+
+.flex-evenly {
+	display: flex;
+	align-items: center;
+	justify-content: space-evenly;
+}
+
+.icons-container {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.name {
+	font-size: 18px;
+	font-weight: 500;
 }

@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import "./App.css";
-import PatientList from "./components/patient/patient-list/PatientList";
+import PatientList, {
+	Patient,
+} from "./components/patient/patient-list/PatientList";
 import PatiantForm from "./components/patient-form/PatientForm";
 import {
 	addPatient,
@@ -10,26 +12,34 @@ import {
 } from "./utils/patientUtils";
 
 function App() {
-	const [patients, setPatients] = useState<string[]>([]);
-	const [filteredPatients, setFilteredPatients] = useState<string[]>([]);
+	const [patients, setPatients] = useState<Patient[]>([]);
+	const [filteredPatients, setFilteredPatients] = useState<Patient[]>([]);
 	const [searchPatient, setSearchPatient] = useState<string>("");
 
 	const timeAwaitToSearch: number = 2000;
 
 	useEffect(() => {
+		fetch("https://63bedcf7f5cfc0949b634fc8.mockapi.io/users")
+			.then((response) => response.json())
+			.then((data) => setPatients(data))
+			.catch((error) => console.error("Error fetching patients:", error));
+	}, []);
+
+	useEffect(() => {
 		setFilteredPatients(
 			patients.filter((patient) =>
-				patient.toLowerCase().includes(searchPatient.toLowerCase())
+				patient.name.toLowerCase().includes(searchPatient.toLowerCase())
 			)
 		);
 	}, [searchPatient, patients]);
 
-	const handleAddPatient = (patient: string) => {
+	const handleAddPatient = (patient: Patient) => {
 		const updatedPatiants = addPatient(patients, patient);
+		console.log("updatedPatiants: ", updatedPatiants);
 		setPatients(updatedPatiants);
 	};
 
-	const handleEditPatient = (index: number, newPatiant: string) => {
+	const handleEditPatient = (index: number, newPatiant: Patient) => {
 		const updatedPatiants = editPatient(patients, index, newPatiant);
 		setPatients(updatedPatiants);
 	};
@@ -47,7 +57,11 @@ function App() {
 		<div className="App">
 			<header>
 				<h2 className="title">Patient List</h2>
-				<PatiantForm addPatient={handleAddPatient} onChange={debounceSearch} />
+				<PatiantForm
+					addPatient={handleAddPatient}
+					onChange={debounceSearch}
+					patients={patients}
+				/>
 			</header>
 			<main>
 				<PatientList

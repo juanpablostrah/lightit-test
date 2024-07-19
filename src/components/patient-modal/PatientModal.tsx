@@ -2,9 +2,7 @@ import React, { useState } from "react";
 import "./PatientModal.css";
 
 interface Patient {
-	id?: number;
 	name: string;
-	age: number;
 	condition: string;
 }
 
@@ -21,7 +19,6 @@ const PatientModal: React.FC<PatientModalProps> = ({
 }) => {
 	const [formData, setFormData] = useState<Patient>({
 		name: patient?.name || "",
-		age: patient?.age || 0,
 		condition: patient?.condition || "",
 	});
 
@@ -47,15 +44,6 @@ const PatientModal: React.FC<PatientModalProps> = ({
 						type="text"
 						name="name"
 						value={formData.name}
-						onChange={handleChange}
-					/>
-				</label>
-				<label>
-					Age:
-					<input
-						type="number"
-						name="age"
-						value={formData.age}
 						onChange={handleChange}
 					/>
 				</label>
