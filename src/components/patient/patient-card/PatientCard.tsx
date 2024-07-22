@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CiEdit } from "react-icons/ci";
-import { FaRegTrashAlt, FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { FaChevronDown, FaChevronUp, FaRegTrashAlt } from "react-icons/fa";
+import { Patient } from "../../../PatientContext";
+import useTextareaAutoHeight from "../../../utils/useTextareaAutoHeight";
+import { errorMessages } from "../../../utils/validations";
 import CardButton from "../../card-button/CardButton";
-import { Patient } from "../patient-list/PatientList";
 import "./PatientCard.css";
 
 interface PatientCardProps {
@@ -13,25 +15,53 @@ interface PatientCardProps {
 
 const PatientCard = ({ patient, onDelete, onEdit }: PatientCardProps) => {
 	const [isEditing, setIsEditing] = useState<boolean>(false);
-	const [editedpatient, setEditedPatient] = useState<Patient>(patient);
+	const [editedPatient, setEditedPatient] = useState<Patient>(patient);
 	const [expanded, setExpanded] = useState<boolean>(false);
+	const [descriptionError, setDescriptionError] = useState<string>("");
+
+	const { textareaRef, adjustTextareaHeight } = useTextareaAutoHeight(
+		editedPatient.description
+	);
+
+	useEffect(() => {
+		if (isEditing) {
+			adjustTextareaHeight();
+		}
+	}, [isEditing, adjustTextareaHeight]);
 
 	const handleEditClick = () => {
 		setIsEditing(true);
 	};
 
 	const handleSaveClick = () => {
-		onEdit(editedpatient);
+		const errorMessage = getErrorMessage(editedPatient.description);
+		if (errorMessage) {
+			setDescriptionError(errorMessage);
+			return;
+		}
+		onEdit(editedPatient);
 		setIsEditing(false);
+		setDescriptionError("");
 	};
 
 	const handleCancelClick = () => {
 		setIsEditing(false);
 		setEditedPatient(patient);
+		setDescriptionError("");
 	};
 
 	const toggleExpand = () => {
 		setExpanded(!expanded);
+	};
+
+	const getErrorMessage = (description: string): string => {
+		if (description.length < 10) {
+			return errorMessages.description.minLength || "";
+		}
+		if (description.length > 1000) {
+			return errorMessages.description.maxLength || "";
+		}
+		return "";
 	};
 
 	return (
@@ -40,7 +70,8 @@ const PatientCard = ({ patient, onDelete, onEdit }: PatientCardProps) => {
 				<div>
 					<textarea
 						className="text-area-edit"
-						value={editedpatient.description}
+						ref={textareaRef}
+						value={editedPatient.description}
 						onChange={(e) =>
 							setEditedPatient((prevPatient) => ({
 								...prevPatient,
@@ -48,15 +79,18 @@ const PatientCard = ({ patient, onDelete, onEdit }: PatientCardProps) => {
 							}))
 						}
 					/>
+					{descriptionError && (
+						<p className="error-message">{descriptionError}</p>
+					)}
 					<div>
 						<button className={"button-footer save"} onClick={handleSaveClick}>
-							Guardar
+							Save
 						</button>
 						<button
 							className={"button-footer cancel"}
 							onClick={handleCancelClick}
 						>
-							Cancelar
+							Cancel
 						</button>
 					</div>
 				</div>
@@ -83,13 +117,12 @@ const PatientCard = ({ patient, onDelete, onEdit }: PatientCardProps) => {
 							style={"icon edit-icon"}
 						/>
 
-						<button className="icon expand-icon" onClick={toggleExpand}>
-							{expanded ? (
-								<FaChevronUp size={20} />
-							) : (
-								<FaChevronDown size={20} />
-							)}
-						</button>
+						<CardButton
+							Icon={expanded ? FaChevronUp : FaChevronDown}
+							size={20}
+							handleOnClick={toggleExpand}
+							style={"icon expand-icon"}
+						/>
 					</div>
 				</div>
 			)}

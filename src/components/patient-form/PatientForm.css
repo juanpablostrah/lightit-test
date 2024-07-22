@@ -37,7 +37,7 @@
 }
 
 .label {
-	width: 120px;
+	width: 140px;
 }
 
 .input,
@@ -67,6 +67,19 @@
 }
 
 .button {
+	margin: 20px;
+	width: 150px;
+	height: 40px;
+	border-radius: 20px;
+	border: none;
+	font-weight: bolder;
+	font-size: inherit;
+	display: flex;
+	align-items: center;
+	justify-content: space-evenly;
+}
+
+.button-enabled {
 	color: #a421f9;
 	margin: 20px;
 	width: 150px;
@@ -81,6 +94,10 @@
 	justify-content: space-evenly;
 }
 
+.button-enabled:hover {
+	background-color: #cdb9f2;
+}
+
 .warning-message {
 	margin-top: -18px;
 	color: #e34f4f;
@@ -91,4 +108,35 @@
 	height: 200px;
 	border-radius: 50%;
 	object-fit: cover;
+}
+
+.m-avatar {
+	margin-left: 300px;
+}
+
+.error-message {
+	color: red;
+	font-size: 12px;
+	margin-top: 5px;
+}
+
+.remove-icon {
+	position: relative !important;
+	margin-bottom: 150px;
+}
+
+.upload-button {
+	width: 132px;
+	height: 28px;
+	border-radius: 20px;
+	color: #000;
+	background-color: #e0e0e0;
+	font-size: inherit;
+	display: flex;
+	align-items: center;
+	justify-content: space-evenly;
+}
+
+.upload-button:hover {
+	background-color: #c0c0c0;
 }

@@ -1,12 +1,15 @@
-import React, { useEffect, useRef, useState } from "react";
-import { FaPlus } from "react-icons/fa";
-import { Patient } from "../patient/patient-list/PatientList";
+import React, { useRef, useState } from "react";
+import toast from "react-hot-toast";
+import { FaPlus, FaRegTrashAlt } from "react-icons/fa";
+import { MdAttachFile } from "react-icons/md";
+import { Patient, usePatientContext } from "../../PatientContext";
+import useTextareaAutoHeight from "../../utils/useTextareaAutoHeight";
+import { validateField, validateForm } from "../../utils/validations";
+import CardButton from "../card-button/CardButton";
 import "./PatientForm.css";
 
 interface PatientFormProps {
-	addPatient: (patient: Patient) => void;
 	onChange: (value: string) => void;
-	patients: Patient[];
 }
 
 const defaultPatient: Patient = {
@@ -16,23 +19,14 @@ const defaultPatient: Patient = {
 	avatar: "",
 };
 
-const PatiantForm = ({ addPatient, onChange, patients }: PatientFormProps) => {
+const PatientForm = ({ onChange }: PatientFormProps) => {
+	const { addPatient, patients } = usePatientContext();
 	const [patient, setPatient] = useState<Patient>(defaultPatient);
 	const [hasPatient, setHasPatient] = useState<boolean>(false);
-	const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+	const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
 	const fileInputRef = useRef<HTMLInputElement>(null);
-
-	useEffect(() => {
-		adjustTextareaHeight();
-	}, [patient]);
-
-	const adjustTextareaHeight = () => {
-		const textarea = textareaRef.current;
-		if (textarea) {
-			textarea.style.height = "auto";
-			textarea.style.height = `${textarea.scrollHeight}px`;
-		}
-	};
+	const { textareaRef } = useTextareaAutoHeight(patient.description);
 
 	const getNextPatientId = () => {
 		if (patients.length === 0) return "1";
@@ -41,22 +35,33 @@ const PatiantForm = ({ addPatient, onChange, patients }: PatientFormProps) => {
 		return (lastId + 1).toString();
 	};
 
+	const getFormErrorsKeys = (formErrors: any) => {
+		return Object.keys(formErrors);
+	};
+
 	const handleAddPatient = () => {
-		// if (patient.name.length > 0) {
-		// 	if (patient.name.trim()) {
-		const newId = getNextPatientId();
-		const newPatient = {
-			...patient,
-			id: getNextPatientId(),
-		};
-		console.log("newId: ", newId);
-		addPatient(newPatient);
-		setHasPatient(false);
-		setPatient(defaultPatient);
-		// 	}
-		// } else {
-		// 	setHasPatient(true);
-		// }
+		const formErrors = validateForm(patient);
+		setErrors(formErrors);
+		const errors = Object.keys(formErrors).length;
+
+		if (errors === 0) {
+			const newPatient = {
+				...patient,
+				id: getNextPatientId(),
+			};
+			addPatient(newPatient);
+			setHasPatient(false);
+			setPatient(defaultPatient);
+			toast.success("Patient created!");
+		} else {
+			const textErrorMessage =
+				errors > 1
+					? "There are errors in the fields"
+					: "There is an error in the field";
+			toast.error(`${textErrorMessage} ${getFormErrorsKeys(formErrors)}`, {
+				duration: 8000,
+			});
+		}
 	};
 
 	const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -72,6 +77,21 @@ const PatiantForm = ({ addPatient, onChange, patients }: PatientFormProps) => {
 		}
 	};
 
+	const handleInputChange = (
+		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+	) => {
+		const { name, value } = e.target;
+		const error = validateField(name, value);
+		setErrors((prevErrors) => ({
+			...prevErrors,
+			[name]: error,
+		}));
+		setPatient((prevPatient) => ({
+			...prevPatient,
+			[name]: value,
+		}));
+	};
+
 	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target.files?.[0];
 		if (file) {
@@ -83,83 +103,117 @@ const PatiantForm = ({ addPatient, onChange, patients }: PatientFormProps) => {
 				}));
 			};
 			reader.readAsDataURL(file);
+			setErrors((prevErrors) => ({
+				...prevErrors,
+				avatar: "",
+			}));
 		}
 	};
 
+	const handleRemovePhoto = () => {
+		setPatient((prevPatient) => ({
+			...prevPatient,
+			avatar: "",
+		}));
+	};
+
+	const hasErrors = Object.keys(errors).some((key) => errors[key] !== "");
+
 	return (
-		<div className="">
+		<div>
 			<div className="flex-center">
-				<form className="flex-column" action="">
-					<div className="flex align-center m-left m-bottom">
+				<form className="flex-column">
+					<div className="flex align-center m-left">
 						<label className="label">Name:</label>
-						<input
-							className="input"
-							placeholder="patient name"
-							onChange={(e) =>
-								setPatient((prevPatient) => ({
-									...prevPatient,
-									name: e.target.value,
-								}))
-							}
-						/>
+						<div>
+							<input
+								name="name"
+								className="input"
+								placeholder="Patient name"
+								value={patient.name}
+								onChange={handleInputChange}
+							/>
+							{errors.name && <p className="error-message">{errors.name}</p>}
+						</div>
 					</div>
 					<div className="flex align-center m-left">
 						<label className="label">Description:</label>
-						<textarea
-							ref={textareaRef}
-							className={`textarea ${hasPatient ? "error" : ""}`}
-							placeholder="patient description..."
-							value={patient.description}
-							onChange={(e) =>
-								setPatient((prevPatient) => ({
-									...prevPatient,
-									description: e.target.value,
-								}))
-							}
-							onKeyDown={handleKeyDown}
-						/>
+						<div>
+							<textarea
+								name="description"
+								ref={textareaRef}
+								className="textarea"
+								placeholder="Patient description..."
+								value={patient.description}
+								onChange={handleInputChange}
+								onKeyDown={handleKeyDown}
+							/>
+							{errors.description && (
+								<p className="error-message">{errors.description}</p>
+							)}
+						</div>
 					</div>
 					<div className="flex align-center m-left">
 						<label className="label" htmlFor="image-upload">
 							<input
+								name="avatar"
 								type="file"
 								ref={fileInputRef}
 								style={{ display: "none" }}
 								onChange={handleFileChange}
 							/>
-							<button type="button" onClick={handleButtonClick}>
-								Subir imagen
+							<button
+								className="upload-button"
+								type="button"
+								onClick={handleButtonClick}
+							>
+								Upload image
+								<MdAttachFile />
 							</button>
 						</label>
 						{patient.avatar && (
-							<div className="flex justify-center">
+							<div className="flex m-avatar">
 								<img
 									className="avatar-form"
 									src={patient.avatar}
 									alt="avatar"
 								/>
+								<CardButton
+									Icon={FaRegTrashAlt}
+									size={15}
+									handleOnClick={handleRemovePhoto}
+									style={"icon remove-icon"}
+								/>
 							</div>
 						)}
+						{errors.avatar && <p className="error-message">{errors.avatar}</p>}
 					</div>
 					<div>
-						<button type="button" className="button" onClick={handleAddPatient}>
+						<button
+							disabled={Object.keys(errors).some((key) => errors[key] !== "")}
+							type="button"
+							className={hasErrors ? "button" : "button button-enabled"}
+							onClick={handleAddPatient}
+						>
 							Add patient
 							<FaPlus size={20} />
 						</button>
 					</div>
+					<div>
+						<input
+							className="input"
+							placeholder="Search your patient by name..."
+							onChange={(e) => onChange(e.target.value)}
+						/>
+					</div>
 				</form>
 
 				{hasPatient && (
-					<p className="warning-message">ingresa algun paciente</p>
+					<p className="warning-message">Please enter a patient.</p>
 				)}
 			</div>
-			<input
-				className="input"
-				placeholder="Search your patient by name..."
-				onChange={(e) => onChange(e.target.value)}
-			/>
 		</div>
 	);
 };
 
-export default PatiantForm;
+export default PatientForm;

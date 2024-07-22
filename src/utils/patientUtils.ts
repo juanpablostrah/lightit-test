@@ -1,4 +1,4 @@
-import { Patient } from "../components/patient/patient-list/PatientList";
+import { Patient } from "../PatientContext";
 
 export const addPatient = (
 	patients: Patient[],
