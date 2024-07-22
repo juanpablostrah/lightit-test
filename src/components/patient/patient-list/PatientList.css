@@ -8,3 +8,37 @@
 	gap: 16px;
 	padding: 16px;
 }
+
+.no-patients-message {
+	text-align: center;
+	color: #999;
+	font-size: 1.2em;
+	margin-top: 20px;
+}
+
+.pagination-controls {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+.pagination-controls button {
+	margin: 0 10px;
+	padding: 10px 20px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	background-color: #fff;
+	cursor: pointer;
+}
+
+.pagination-controls button:disabled {
+	cursor: not-allowed;
+	opacity: 0.5;
+}
+
+.pagination-controls span {
+	margin: 0 20px;
+	font-size: 16px;
+}

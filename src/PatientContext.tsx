@@ -38,8 +38,6 @@ export const PatientProvider: React.FC<PatientProviderProps> = ({
 	const [filteredPatients, setFilteredPatients] = useState<Patient[]>([]);
 	const [searchPatient, setSearchPatient] = useState<string>("");
 
-	const timeAwaitToSearch: number = 2000;
-
 	useEffect(() => {
 		fetch("https://63bedcf7f5cfc0949b634fc8.mockapi.io/users")
 			.then((response) => response.json())
