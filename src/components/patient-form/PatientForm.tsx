@@ -6,11 +6,9 @@ import { Patient, usePatientContext } from "../../PatientContext";
 import useTextareaAutoHeight from "../../utils/useTextareaAutoHeight";
 import { validateField, validateForm } from "../../utils/validations";
 import CardButton from "../card-button/CardButton";
+import { useDebouncedCallback } from "use-debounce";
 import "./PatientForm.css";
-
-interface PatientFormProps {
-	onChange: (value: string) => void;
-}
+import PatientModal from "../patient-modal/PatientModal";
 
 const defaultPatient: Patient = {
 	id: "0",
@@ -19,14 +17,19 @@ const defaultPatient: Patient = {
 	avatar: "",
 };
 
-const PatientForm = ({ onChange }: PatientFormProps) => {
-	const { addPatient, patients } = usePatientContext();
+const PatientForm = () => {
+	const { addPatient, patients, setSearchPatient } = usePatientContext();
 	const [patient, setPatient] = useState<Patient>(defaultPatient);
 	const [hasPatient, setHasPatient] = useState<boolean>(false);
 	const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const { textareaRef } = useTextareaAutoHeight(patient.description);
+	const timeAwaitToSearch: number = 500;
+
+	const debounceSearch = useDebouncedCallback((searchPatiant) => {
+		setSearchPatient(searchPatiant);
+	}, timeAwaitToSearch);
 
 	const getNextPatientId = () => {
 		if (patients.length === 0) return "1";
@@ -159,11 +162,11 @@ const PatientForm = ({ onChange }: PatientFormProps) => {
 								name="avatar"
 								type="file"
 								ref={fileInputRef}
-								style={{ display: "none" }}
+								hidden
 								onChange={handleFileChange}
 							/>
 							<button
-								className="upload-button"
+								className="button  button-enabled"
 								type="button"
 								onClick={handleButtonClick}
 							>
@@ -203,14 +206,10 @@ const PatientForm = ({ onChange }: PatientFormProps) => {
 						<input
 							className="input"
 							placeholder="Search your patient by name..."
-							onChange={(e) => onChange(e.target.value)}
+							onChange={(e) => debounceSearch(e.target.value)}
 						/>
 					</div>
 				</form>
-
-				{hasPatient && (
-					<p className="warning-message">Please enter a patient.</p>
-				)}
 			</div>
 		</div>
 	);

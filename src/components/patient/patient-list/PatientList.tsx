@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Patient, usePatientContext } from "../../../PatientContext";
 import PatientCard from "../patient-card/PatientCard";
 import "./PatientList.css";
@@ -10,6 +10,9 @@ const PatientList = () => {
 		usePatientContext();
 	const [currentPage, setCurrentPage] = useState<number>(1);
 
+	useEffect(() => {
+		setCurrentPage(1);
+	}, [filteredPatients]);
 	const totalItems = filteredPatients.length;
 	const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
 

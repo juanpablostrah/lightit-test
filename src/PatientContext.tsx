@@ -39,10 +39,24 @@ export const PatientProvider: React.FC<PatientProviderProps> = ({
 	const [searchPatient, setSearchPatient] = useState<string>("");
 
 	useEffect(() => {
-		fetch("https://63bedcf7f5cfc0949b634fc8.mockapi.io/users")
-			.then((response) => response.json())
-			.then((data) => setPatients(data))
-			.catch((error) => console.error("Error fetching patients:", error));
+		let cancel = false;
+		async function fetchUsers() {
+			try {
+				const response = await fetch(
+					"https://63bedcf7f5cfc0949b634fc8.mockapi.io/users"
+				);
+				const data = await response.json();
+				if (!cancel) {
+					setPatients(data);
+				}
+			} catch (e) {
+				console.error("Error fetching patients:", e);
+			}
+		}
+		fetchUsers();
+		return function () {
+			cancel = true;
+		};
 	}, []);
 
 	useEffect(() => {
@@ -53,18 +67,23 @@ export const PatientProvider: React.FC<PatientProviderProps> = ({
 		);
 	}, [searchPatient, patients]);
 
-	const handleAddPatient = (patient: Patient) => {
+	const addPatient = (patient: Patient) => {
 		setPatients((prevPatients) => [...prevPatients, patient]);
 	};
 
-	const handleEditPatient = (index: number, newPatient: Patient) => {
-		setPatients((prevPatients) =>
-			prevPatients.map((patient, i) => (i === index ? newPatient : patient))
-		);
+	const editPatient = (index: number, newPatient: Patient) => {
+		setPatients((prevPatients) => [
+			...prevPatients.slice(0, index),
+			newPatient,
+			...prevPatients.slice(index + 1),
+		]);
 	};
 
-	const handleDeletePatient = (index: number) => {
-		setPatients((prevPatients) => prevPatients.filter((_, i) => i !== index));
+	const deletePatient = (index: number) => {
+		setPatients((prevPatients) => [
+			...prevPatients.slice(0, index),
+			...prevPatients.slice(index + 1),
+		]);
 	};
 
 	return (
@@ -73,9 +92,9 @@ export const PatientProvider: React.FC<PatientProviderProps> = ({
 				patients,
 				filteredPatients,
 				searchPatient,
-				addPatient: handleAddPatient,
-				editPatient: handleEditPatient,
-				deletePatient: handleDeletePatient,
+				addPatient,
+				editPatient,
+				deletePatient,
 				setSearchPatient,
 			}}
 		>
