@@ -7,6 +7,7 @@
 	grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
 	gap: 16px;
 	padding: 16px;
+	padding-bottom: 60px;
 }
 
 .no-patients-message {
@@ -17,11 +18,14 @@
 }
 
 .pagination-controls {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	width: 100%;
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	margin-top: 20px;
-	margin-bottom: 20px;
+	padding: 10px 0;
 }
 
 .pagination-controls button {

@@ -137,3 +137,19 @@
 	font-size: 18px;
 	font-weight: 500;
 }
+
+.input-card {
+	border: 1px solid #ccc;
+	border-radius: 10px;
+	width: 400px;
+	padding: 12px;
+	box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.25);
+	box-sizing: border-box;
+	margin-top: 2px;
+	margin-bottom: 10px;
+	font-weight: 600;
+	font-size: 14px;
+	line-height: 20px;
+	font-family: "Poppins", sans-serif;
+	letter-spacing: 0.02em;
+}

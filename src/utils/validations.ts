@@ -1,3 +1,4 @@
+import { placeholderPicture } from "../components/patient-modal/PatientModal";
 import { Patient } from "../PatientContext";
 
 interface ValidationRules {
@@ -70,7 +71,14 @@ export const validateField = (name: string, value: string): string => {
 	const rules = validationRules[name];
 	if (!rules) return "";
 
-	if (rules.required && !value.trim()) {
+	console.log(
+		"placeholderPicture === value: ",
+		placeholderPicture,
+		value,
+		placeholderPicture === value
+	);
+
+	if (rules.required && !value.trim() && placeholderPicture === value) {
 		return errorMessages[name].required || `${name} is required`;
 	}
 

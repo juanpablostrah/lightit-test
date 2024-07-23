@@ -18,6 +18,7 @@ const PatientCard = ({ patient, onDelete, onEdit }: PatientCardProps) => {
 	const [editedPatient, setEditedPatient] = useState<Patient>(patient);
 	const [expanded, setExpanded] = useState<boolean>(false);
 	const [descriptionError, setDescriptionError] = useState<string>("");
+	const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
 	const { textareaRef, adjustTextareaHeight } = useTextareaAutoHeight(
 		editedPatient.description
@@ -64,24 +65,39 @@ const PatientCard = ({ patient, onDelete, onEdit }: PatientCardProps) => {
 		return "";
 	};
 
+	//agregar manejo de errores similar al form del modal
 	return (
 		<div className="card">
 			{isEditing ? (
 				<div>
-					<textarea
-						className="text-area-edit"
-						ref={textareaRef}
-						value={editedPatient.description}
-						onChange={(e) =>
-							setEditedPatient((prevPatient) => ({
-								...prevPatient,
-								description: e.target.value,
-							}))
-						}
-					/>
-					{descriptionError && (
-						<p className="error-message">{descriptionError}</p>
-					)}
+					<div className="input-container">
+						<input
+							className="input-card"
+							value={editedPatient.name}
+							onChange={(e) =>
+								setEditedPatient((prevPatient) => ({
+									...prevPatient,
+									name: e.target.value,
+								}))
+							}
+						/>
+					</div>
+					<div className="input-container">
+						<textarea
+							className="text-area-edit"
+							ref={textareaRef}
+							value={editedPatient.description}
+							onChange={(e) =>
+								setEditedPatient((prevPatient) => ({
+									...prevPatient,
+									description: e.target.value,
+								}))
+							}
+						/>
+						{descriptionError && (
+							<p className="error-message">{descriptionError}</p>
+						)}
+					</div>
 					<div>
 						<button className={"button-footer save"} onClick={handleSaveClick}>
 							Save

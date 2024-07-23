@@ -1,43 +1,7 @@
-.form-container {
-	width: 100%;
-}
-
-.flex {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-}
-
-.flex-column {
-	display: flex;
-	align-items: flex-start;
-	flex-direction: column;
-}
-
 .flex-center {
 	display: flex;
 	align-items: flex-start;
 	justify-content: center;
-}
-
-.align-center {
-	align-items: center;
-}
-
-.m-left {
-	margin-left: 35px;
-}
-
-.m-right {
-	margin-right: 10px;
-}
-
-.m-bottom {
-	margin-bottom: 10px;
-}
-
-.label {
-	width: 140px;
 }
 
 .input,
@@ -57,86 +21,32 @@
 	letter-spacing: 0.02em;
 }
 
-.textarea {
-	resize: none;
-	overflow: hidden;
-}
-
-.textarea.error {
-	border: 1px solid red;
-}
-
-.button {
-	margin: 20px;
-	width: 150px;
-	height: 40px;
-	border-radius: 20px;
+.floating-button {
+	z-index: 2;
+	position: fixed;
+	bottom: 20px;
+	right: 20px;
+	background-color: #712c9c;
+	color: white;
 	border: none;
-	font-weight: bolder;
-	font-size: inherit;
-	display: flex;
-	align-items: center;
-	justify-content: space-evenly;
-}
-
-.button-enabled {
-	color: #a421f9;
-	margin: 20px;
-	width: 150px;
-	height: 40px;
-	border-radius: 20px;
-	border: none;
-	background-color: #ede3f4;
-	font-weight: bolder;
-	font-size: inherit;
-	display: flex;
-	align-items: center;
-	justify-content: space-evenly;
-}
-
-.button-enabled:hover {
-	background-color: #cdb9f2;
-}
-
-.warning-message {
-	margin-top: -18px;
-	color: #e34f4f;
-}
-
-.avatar-form {
-	width: 200px;
-	height: 200px;
 	border-radius: 50%;
-	object-fit: cover;
-}
-
-.m-avatar {
-	margin-left: 300px;
-}
-
-.error-message {
-	color: red;
-	font-size: 12px;
-	margin-top: 5px;
-}
-
-.remove-icon {
-	position: relative !important;
-	margin-bottom: 150px;
-}
-
-.upload-button {
-	width: 132px;
-	height: 28px;
-	border-radius: 20px;
-	color: #000;
-	background-color: #e0e0e0;
-	font-size: inherit;
+	width: 60px;
+	height: 60px;
 	display: flex;
+	justify-content: center;
 	align-items: center;
-	justify-content: space-evenly;
+	font-size: 24px;
+	cursor: pointer;
+	box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.upload-button:hover {
-	background-color: #c0c0c0;
+.floating-button:hover {
+	background-color: #8b4eb2;
+}
+
+.avatar-preview {
+	width: 100px;
+	height: 100px;
+	border-radius: 50%;
+	margin-top: 10px;
 }

@@ -10,14 +10,172 @@
 	align-items: center;
 }
 
+.modal {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.5);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 1000;
+}
+
 .modal-content {
 	background: white;
 	padding: 2rem;
 	border-radius: 5px;
-	width: 300px;
+	width: auto;
 }
 
 .modal-content label {
 	display: block;
 	margin-bottom: 1rem;
+}
+
+.form-container {
+	width: 100%;
+}
+
+.flex {
+	display: flex;
+	align-items: center;
+	/* justify-content: space-between; */
+}
+
+.flex-column {
+	display: flex;
+	align-items: flex-start;
+	flex-direction: column;
+}
+
+.flex-center {
+	display: flex;
+	align-items: flex-start;
+	justify-content: center;
+}
+
+.align-center {
+	align-items: center;
+}
+
+.m-left {
+	margin-left: 35px;
+}
+
+.m-right {
+	margin-right: 35px;
+}
+
+.m-bottom {
+	margin-bottom: 10px;
+}
+
+.label {
+	width: 140px;
+}
+
+.input,
+.textarea {
+	border: 1px solid #ccc;
+	border-radius: 10px;
+	width: 800px;
+	padding: 12px;
+	box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.25);
+	box-sizing: border-box;
+	margin-top: 2px;
+	margin-bottom: 10px;
+	font-weight: 600;
+	font-size: 14px;
+	line-height: 20px;
+	font-family: "Poppins", sans-serif;
+	letter-spacing: 0.02em;
+}
+
+.textarea {
+	resize: none;
+	overflow: hidden;
+}
+
+.textarea.error {
+	border: 1px solid red;
+}
+
+.button {
+	width: 150px;
+	height: 40px;
+	border-radius: 20px;
+	border: none;
+	font-weight: bolder;
+	font-size: inherit;
+	display: flex;
+	align-items: center;
+	justify-content: space-evenly;
+}
+
+.button-enabled {
+	color: #a421f9;
+}
+
+.button-enabled:hover {
+	background-color: #cdb9f2;
+}
+
+.warning-message {
+	margin-top: -18px;
+	color: #e34f4f;
+}
+
+.avatar-form {
+	width: 200px;
+	height: 200px;
+	border-radius: 50%;
+	object-fit: cover;
+}
+
+.m-avatar {
+	margin-left: 300px;
+}
+
+.input-container {
+	margin-bottom: 20px; /* Ajusta el valor según sea necesario */
+	position: relative;
+}
+
+.error-message {
+	color: red;
+	font-size: 12px;
+	margin-top: 5px;
+	position: absolute;
+	bottom: -20px; /* Ajusta el valor según sea necesario */
+}
+
+.remove-icon {
+	position: relative !important;
+	margin-bottom: 150px;
+}
+
+.upload-button {
+	width: 132px;
+	height: 28px;
+	border-radius: 20px;
+	color: #000;
+	background-color: #e0e0e0;
+	font-size: inherit;
+	display: flex;
+	align-items: center;
+	justify-content: space-evenly;
+}
+
+.upload-button:hover {
+	background-color: #c0c0c0;
+}
+
+.title {
+	font-family: "Poppins", sans-serif;
+	font-weight: 600;
+	color: #712c9c;
+	text-align: center;
 }

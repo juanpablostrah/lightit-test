@@ -37,7 +37,7 @@ const PatientList = () => {
 			{totalItems === 0 ? (
 				<p className="no-patients-message">No patients found</p>
 			) : (
-				<>
+				<div>
 					<div className="card-list">
 						{paginatedPatients.map((patient) => {
 							const originalIndex = patients.findIndex(
@@ -71,7 +71,7 @@ const PatientList = () => {
 							Next
 						</button>
 					</div>
-				</>
+				</div>
 			)}
 		</>
 	);
