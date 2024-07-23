@@ -11,7 +11,7 @@ interface PatientContextProps {
 	filteredPatients: Patient[];
 	searchPatient: string;
 	addPatient: (patient: Patient) => void;
-	editPatient: (index: number, newPatient: Patient) => void;
+	updatePatient: (updatedPatient: Patient) => void;
 	deletePatient: (index: number) => void;
 	setSearchPatient: (search: string) => void;
 }
@@ -68,17 +68,40 @@ export const PatientProvider: React.FC<PatientProviderProps> = ({
 	}, [searchPatient, patients]);
 
 	const addPatient = (patient: Patient) => {
-		setPatients((prevPatients) => [...prevPatients, patient]);
-	};
-
-	const editPatient = (index: number, newPatient: Patient) => {
+		const nextPatientId = patients.length
+			? patients
+					.reduce(function (prev, current) {
+						return Math.max(prev, parseInt(current.id));
+					}, 0)
+					.toString()
+			: "0";
 		setPatients((prevPatients) => [
-			...prevPatients.slice(0, index),
-			newPatient,
-			...prevPatients.slice(index + 1),
+			...prevPatients,
+			{
+				...patient,
+				id: nextPatientId,
+			},
 		]);
 	};
 
+	// TODO: tiene que recibir el ID, cambiar nombre a updatePatient
+	// const updatePatient = (index: number, newPatient: Patient) => {
+	// 	setPatients((prevPatients) => [
+	// 		...prevPatients.slice(0, index),
+	// 		newPatient,
+	// 		...prevPatients.slice(index + 1),
+	// 	]);
+	// };
+
+	const updatePatient = (updatedPatient: Patient) => {
+		setPatients((prevPatients) =>
+			prevPatients.map((patient) =>
+				patient.id === updatedPatient.id ? updatedPatient : patient
+			)
+		);
+	};
+
+	// TODO: tiene que recibir el ID, cambiar nombre a removePatient
 	const deletePatient = (index: number) => {
 		setPatients((prevPatients) => [
 			...prevPatients.slice(0, index),
@@ -93,7 +116,7 @@ export const PatientProvider: React.FC<PatientProviderProps> = ({
 				filteredPatients,
 				searchPatient,
 				addPatient,
-				editPatient,
+				updatePatient,
 				deletePatient,
 				setSearchPatient,
 			}}

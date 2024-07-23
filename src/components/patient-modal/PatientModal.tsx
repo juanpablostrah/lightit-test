@@ -6,57 +6,47 @@ import "./PatientModal.css";
 import toast from "react-hot-toast";
 import { MdAttachFile } from "react-icons/md";
 import CardButton from "../card-button/CardButton";
-import { FaPlus, FaRegTrashAlt } from "react-icons/fa";
+import { FaRegTrashAlt } from "react-icons/fa";
+
 interface PatientModalProps {
-	patient: Patient | null;
-	onSave: (patient: Patient) => void;
+	initial?: Partial<Patient>;
 	onClose: () => void;
-	setIsModalOpen: (open: boolean) => void;
+	onDismiss: () => void;
 }
+
+type Errors<T> = Partial<{ [key in keyof T]: string }>;
+type Blured<T> = Partial<{ [key in keyof T]: boolean }>;
 
 export const placeholderPicture =
 	"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT9cSGzVkaZvJD5722MU5A-JJt_T5JMZzotcw&s";
 
-const defaultPatient: Patient = {
-	id: "0",
-	name: "",
-	description: "",
-	avatar: placeholderPicture,
-};
-
 const PatientModal: React.FC<PatientModalProps> = ({
 	onClose,
-	setIsModalOpen,
+	onDismiss,
+	initial = {},
 }) => {
-	const [formData, setFormData] = useState<Patient>(defaultPatient); //ver formData q hacer
-	const [patient, setPatient] = useState<Patient>(defaultPatient);
-	const [errors, setErrors] = useState<{ [key: string]: string }>({});
+	const [patient, setPatient] = useState(initial);
+	const [submited, setSubmited] = useState(false);
+	const [errors, setErrors] = useState<Errors<Patient>>(validateForm(initial));
+	const [blured, setBlured] = useState<Blured<Patient>>({});
+
 	const modalRef = useRef<HTMLDivElement>(null);
 
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const { textareaRef } = useTextareaAutoHeight(patient.description);
-	const { addPatient, patients } = usePatientContext();
-
-	// useEffect(() => {
-	// 	if (patient) {
-	// 		setFormData(patient);
-	// 	} else {
-	// 		setFormData(defaultPatient);
-	// 	}
-	// }, [patient]);
-
-	const handleClickOutside = (e: MouseEvent) => {
-		if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
-			onClose();
-		}
-	};
+	const { addPatient, updatePatient } = usePatientContext();
 
 	useEffect(() => {
+		const handleClickOutside = (e: MouseEvent) => {
+			if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
+				onDismiss();
+			}
+		};
 		document.addEventListener("mousedown", handleClickOutside);
 		return () => {
 			document.removeEventListener("mousedown", handleClickOutside);
 		};
-	}, []);
+	}, [onDismiss]);
 
 	const handleInputChange = (
 		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -73,6 +63,16 @@ const PatientModal: React.FC<PatientModalProps> = ({
 		}));
 	};
 
+	const handleInputBlur = (
+		e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>
+	) => {
+		const { name } = e.target;
+		setBlured((blured) => ({
+			...blured,
+			[name]: true,
+		}));
+	};
+
 	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		if (patient.avatar === placeholderPicture) {
 			setErrors((prevErrors) => ({
@@ -82,6 +82,7 @@ const PatientModal: React.FC<PatientModalProps> = ({
 		}
 		const file = e.target.files?.[0];
 		if (file) {
+			// TODO esto es asincronico hay que convertirlo a promise para manejarlo correctamente
 			const reader = new FileReader();
 			reader.onloadend = () => {
 				setPatient((prevPatient) => ({
@@ -98,52 +99,31 @@ const PatientModal: React.FC<PatientModalProps> = ({
 	};
 
 	const handleRemovePhoto = () => {
-		setPatient((prevPatient) => ({
-			...prevPatient,
-			avatar: placeholderPicture,
-		}));
-	};
-
-	const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-		if (e.key === "Enter" && !e.shiftKey) {
-			e.preventDefault();
-			handleAddPatient();
-		}
-	};
-
-	const getNextPatientId = () => {
-		if (patients.length === 0) return "1";
-		const lastPatient = patients[patients.length - 1];
-		const lastId = parseInt(lastPatient.id);
-		return (lastId + 1).toString();
-	};
-
-	const getFormErrorsKeys = (formErrors: any) => {
-		return Object.keys(formErrors);
+		setPatient(({ avatar, ...prevPatient }) => prevPatient);
 	};
 
 	const handleAddPatient = () => {
-		const formErrors = validateForm(patient);
-		setErrors(formErrors);
-		const errors = Object.keys(formErrors).length;
-
-		if (errors === 0) {
-			const newPatient = {
-				...patient,
-				id: getNextPatientId(),
-			};
-			addPatient(newPatient);
-			setPatient(defaultPatient);
-			setIsModalOpen(false);
-			toast.success("Patient created!", { duration: 4000 });
-		} else {
+		setSubmited(true);
+		const errorKeys = Object.keys(errors).filter(
+			(key) => errors[key as keyof Patient] !== ""
+		);
+		if (errorKeys.length) {
 			const textErrorMessage =
-				errors > 1
-					? "There are errors in the fields"
-					: "There is an error in the field";
-			toast.error(`${textErrorMessage} ${getFormErrorsKeys(formErrors)}`, {
-				duration: 8000,
+				errorKeys.length > 1
+					? "There are errors for multiple fields"
+					: "There is an error in one of the fields";
+			toast.error(`${textErrorMessage}`, {
+				duration: 3000,
 			});
+		} else {
+			if (patient.id) {
+				updatePatient(patient as Patient);
+				toast.success("Patient updated!", { duration: 4000 });
+			} else {
+				addPatient(patient as Patient);
+				toast.success("Patient created!", { duration: 4000 });
+			}
+			onClose();
 		}
 	};
 
@@ -152,12 +132,6 @@ const PatientModal: React.FC<PatientModalProps> = ({
 			fileInputRef.current.click();
 		}
 	};
-
-	const handleClose = () => {
-		setIsModalOpen(false);
-	};
-
-	const hasErrors = Object.keys(errors).some((key) => errors[key] !== "");
 
 	return (
 		<div className="modal">
@@ -176,8 +150,11 @@ const PatientModal: React.FC<PatientModalProps> = ({
 									placeholder="Patient name"
 									value={patient.name}
 									onChange={handleInputChange}
+									onBlur={handleInputBlur}
 								/>
-								{errors.name && <p className="error-message">{errors.name}</p>}
+								{(blured.name || submited) && errors.name && (
+									<p className="error-message">{errors.name}</p>
+								)}
 							</div>
 						</div>
 					</div>
@@ -193,9 +170,9 @@ const PatientModal: React.FC<PatientModalProps> = ({
 									placeholder="Patient description..."
 									value={patient.description}
 									onChange={handleInputChange}
-									onKeyDown={handleKeyDown}
+									onBlur={handleInputBlur}
 								/>
-								{errors.description && (
+								{(blured.description || submited) && errors.description && (
 									<p className="error-message">{errors.description}</p>
 								)}
 							</div>
@@ -221,24 +198,22 @@ const PatientModal: React.FC<PatientModalProps> = ({
 									<MdAttachFile />
 								</button>
 							</label>
-							{patient.avatar && (
-								<div className="flex m-avatar">
-									<img
-										className="avatar-form"
-										src={patient.avatar}
-										alt="avatar"
+							<div className="flex m-avatar">
+								<img
+									className="avatar-form"
+									src={patient.avatar || placeholderPicture}
+									alt="avatar"
+								/>
+								{patient.avatar && (
+									<CardButton
+										Icon={FaRegTrashAlt}
+										size={15}
+										handleOnClick={handleRemovePhoto}
+										style={"icon remove-icon"}
 									/>
-									{patient.avatar !== placeholderPicture && (
-										<CardButton
-											Icon={FaRegTrashAlt}
-											size={15}
-											handleOnClick={handleRemovePhoto}
-											style={"icon remove-icon"}
-										/>
-									)}
-								</div>
-							)}
-							{errors.avatar && (
+								)}
+							</div>
+							{(blured.avatar || submited) && errors.avatar && (
 								<p className="error-message">{errors.avatar}</p>
 							)}
 						</div>
@@ -246,18 +221,16 @@ const PatientModal: React.FC<PatientModalProps> = ({
 
 					<div>
 						<button
-							disabled={Object.keys(errors).some((key) => errors[key] !== "")}
 							type="button"
-							className={hasErrors ? "button" : "button button-enabled"}
+							className={"button button-enabled"}
 							onClick={handleAddPatient}
 						>
 							Add patient
 						</button>
 						<button
-							disabled={Object.keys(errors).some((key) => errors[key] !== "")}
 							type="button"
-							className={hasErrors ? "button" : "button button-enabled"}
-							onClick={handleClose}
+							className={"button button-enabled"}
+							onClick={onDismiss}
 						>
 							Cancel
 						</button>

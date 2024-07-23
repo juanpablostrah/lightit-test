@@ -1,15 +1,24 @@
-import React, { useState } from "react";
-import toast from "react-hot-toast";
+import React from "react";
 import { FaPlus } from "react-icons/fa";
+import { useDebouncedCallback } from "use-debounce";
 import { Patient, usePatientContext } from "../../PatientContext";
 import PatientModal from "../patient-modal/PatientModal";
-import { useDebouncedCallback } from "use-debounce";
 import "./PatientForm.css";
 
-const PatientForm = () => {
-	const { addPatient, setSearchPatient } = usePatientContext();
-	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-	const [editingPatient, setEditingPatient] = useState<Patient | null>(null);
+interface PatientFormProps {
+	isModalOpen: boolean;
+	setIsModalOpen: (boolean: boolean) => void;
+	editingPatient: Partial<Patient> | undefined;
+	setEditingPatient: (patient: Partial<Patient> | undefined) => void;
+}
+
+const PatientForm = ({
+	isModalOpen,
+	setIsModalOpen,
+	editingPatient,
+	setEditingPatient,
+}: PatientFormProps) => {
+	const { setSearchPatient } = usePatientContext();
 
 	const timeAwaitToSearch: number = 500;
 
@@ -17,14 +26,8 @@ const PatientForm = () => {
 		setSearchPatient(searchPatiant);
 	}, timeAwaitToSearch);
 
-	const handleAddPatient = (patient: Patient) => {
-		addPatient(patient);
-		toast.success("Patient created!", { duration: 4000 });
-		setIsModalOpen(false);
-	};
-
 	const handleOpenModal = () => {
-		setEditingPatient(null);
+		setEditingPatient(undefined);
 		setIsModalOpen(true);
 	};
 
@@ -35,6 +38,7 @@ const PatientForm = () => {
 					className="input"
 					placeholder="Search your patient by name..."
 					onChange={(e) => debounceSearch(e.target.value)}
+					onBlur={() => 1}
 				/>
 			</div>
 			<button className="floating-button" onClick={handleOpenModal}>
@@ -42,10 +46,9 @@ const PatientForm = () => {
 			</button>
 			{isModalOpen && (
 				<PatientModal
-					patient={editingPatient}
-					onSave={handleAddPatient}
+					initial={editingPatient || {}}
 					onClose={() => setIsModalOpen(false)}
-					setIsModalOpen={setIsModalOpen}
+					onDismiss={() => setIsModalOpen(false)}
 				/>
 			)}
 		</div>

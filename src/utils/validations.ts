@@ -1,4 +1,3 @@
-import { placeholderPicture } from "../components/patient-modal/PatientModal";
 import { Patient } from "../PatientContext";
 
 interface ValidationRules {
@@ -21,6 +20,8 @@ interface ErrorConfig {
 	[key: string]: ErrorMessages;
 }
 
+// TODO: estas validaciones deberian estar en el componente del formulario
+//
 const validationRules: ValidationConfig = {
 	name: {
 		required: true,
@@ -53,7 +54,9 @@ export const errorMessages: ErrorConfig = {
 	},
 };
 
-export const validateForm = (patient: Patient): { [key: string]: string } => {
+export const validateForm = (
+	patient: Partial<Patient>
+): { [key: string]: string } => {
 	const errors: { [key: string]: string } = {};
 	Object.keys(validationRules).forEach((field) => {
 		const error = validateField(
@@ -67,18 +70,11 @@ export const validateForm = (patient: Patient): { [key: string]: string } => {
 	return errors;
 };
 
-export const validateField = (name: string, value: string): string => {
+export const validateField = (name: string, value = ""): string => {
 	const rules = validationRules[name];
 	if (!rules) return "";
 
-	console.log(
-		"placeholderPicture === value: ",
-		placeholderPicture,
-		value,
-		placeholderPicture === value
-	);
-
-	if (rules.required && !value.trim() && placeholderPicture === value) {
+	if (rules.required && !value.trim()) {
 		return errorMessages[name].required || `${name} is required`;
 	}
 

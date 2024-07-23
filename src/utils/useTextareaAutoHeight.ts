@@ -1,6 +1,6 @@
 import { useEffect, useRef, useCallback } from "react";
 
-const useTextareaAutoHeight = (value: string) => {
+const useTextareaAutoHeight = (value?: string) => {
 	const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
 	const adjustTextareaHeight = useCallback(() => {

@@ -5,8 +5,19 @@ import "./PatientList.css";
 
 const ITEMS_PER_PAGE = 12;
 
-const PatientList = () => {
-	const { filteredPatients, deletePatient, editPatient, patients } =
+interface PatientListProps {
+	isModalOpen: boolean;
+	setIsModalOpen: (boolean: boolean) => void;
+	editingPatient: Partial<Patient> | undefined;
+	setEditingPatient: (patient: Partial<Patient> | undefined) => void;
+}
+
+const PatientList = ({
+	isModalOpen,
+	setIsModalOpen,
+	setEditingPatient,
+}: PatientListProps) => {
+	const { filteredPatients, deletePatient, updatePatient, patients } =
 		usePatientContext();
 	const [currentPage, setCurrentPage] = useState<number>(1);
 
@@ -20,8 +31,8 @@ const PatientList = () => {
 		deletePatient(index);
 	};
 
-	const handleEdit = (index: number, newPatient: Patient) => {
-		editPatient(index, newPatient);
+	const handleEdit = (newPatient: Patient) => {
+		updatePatient(newPatient);
 	};
 
 	const handlePageChange = (page: number) => {
@@ -31,6 +42,11 @@ const PatientList = () => {
 	const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
 	const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, totalItems);
 	const paginatedPatients = filteredPatients.slice(startIndex, endIndex);
+
+	const handleCardClick = (patient: Patient) => {
+		setEditingPatient(patient);
+		setIsModalOpen(true);
+	};
 
 	return (
 		<>
@@ -48,7 +64,8 @@ const PatientList = () => {
 									key={patient.id}
 									patient={patient}
 									onDelete={() => handleDelete(originalIndex)}
-									onEdit={(newPatient) => handleEdit(originalIndex, newPatient)}
+									onEdit={(newPatient) => handleEdit(newPatient)}
+									onClick={() => handleCardClick(patient)}
 								/>
 							);
 						})}
