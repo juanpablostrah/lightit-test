@@ -13,7 +13,7 @@ interface PatientContextProps {
 	patientCardExpandedId: string | undefined;
 	addPatient: (patient: Patient) => void;
 	updatePatient: (updatedPatient: Patient) => void;
-	deletePatient: (index: number) => void;
+	deletePatient: (id: string) => void;
 	setSearchPatient: (search: string) => void;
 	setPatientCardExpandedId: (id: string | undefined) => void;
 }
@@ -97,12 +97,10 @@ export const PatientProvider: React.FC<PatientProviderProps> = ({
 		);
 	};
 
-	// TODO: tiene que recibir el ID, cambiar nombre a removePatient
-	const deletePatient = (index: number) => {
-		setPatients((prevPatients) => [
-			...prevPatients.slice(0, index),
-			...prevPatients.slice(index + 1),
-		]);
+	const deletePatient = (id: string) => {
+		setPatients((prevPatients) =>
+			prevPatients.filter((patient) => patient.id !== id)
+		);
 	};
 
 	return (

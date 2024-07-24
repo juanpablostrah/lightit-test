@@ -1,7 +1,7 @@
 import React from "react";
 import { FaPlus } from "react-icons/fa";
 import { useDebouncedCallback } from "use-debounce";
-import { Patient, usePatientContext } from "../../PatientContext";
+import { Patient, usePatientContext } from "../../../PatientContext";
 import PatientModal from "../patient-modal/PatientModal";
 import "./PatientForm.css";
 

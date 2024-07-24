@@ -41,21 +41,21 @@ const PatientCard = ({ patient, onDelete, onClick }: PatientCardProps) => {
 							Icon={FaRegTrashAlt}
 							size={15}
 							handleOnClick={onDelete}
-							style={"icon trash-icon"}
+							className={"icon trash-icon"}
 						/>
 
 						<CardButton
 							Icon={CiEdit}
 							size={20}
 							handleOnClick={handleEditClick}
-							style={"icon edit-icon"}
+							className={"icon edit-icon"}
 						/>
 
 						<CardButton
 							Icon={isExpanded ? FaChevronUp : FaChevronDown}
 							size={20}
 							handleOnClick={toggleExpand}
-							style={"icon expand-icon"}
+							className={"icon expand-icon"}
 						/>
 					</div>
 				</div>

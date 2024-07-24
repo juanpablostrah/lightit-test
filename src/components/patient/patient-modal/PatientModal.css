@@ -103,6 +103,7 @@
 	align-items: center;
 	justify-content: space-evenly;
 	margin-left: 10px;
+	cursor: pointer;
 }
 
 .button-success {

@@ -2,14 +2,19 @@ import React from "react";
 
 interface CardButtonProps {
 	Icon?: any;
-	style?: string;
+	className?: string;
 	size?: number;
 	handleOnClick: () => void;
 }
 
-const CardButton = ({ Icon, style, size, handleOnClick }: CardButtonProps) => {
+const CardButton = ({
+	Icon,
+	className,
+	size,
+	handleOnClick,
+}: CardButtonProps) => {
 	return (
-		<button className={style}>
+		<button className={className}>
 			<Icon size={size} onClick={handleOnClick} />
 		</button>
 	);

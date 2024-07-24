@@ -20,8 +20,6 @@ interface ErrorConfig {
 	[key: string]: ErrorMessages;
 }
 
-// TODO: estas validaciones deberian estar en el componente del formulario
-//
 const validationRules: ValidationConfig = {
 	name: {
 		required: true,

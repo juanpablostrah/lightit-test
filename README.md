@@ -4,7 +4,27 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Available Scripts
 
-In the project directory, you can run:
+# Patient Management Project
+
+## Description
+
+This project is a patient management application developed with React. It allows users to add, edit, delete, and view patient details.
+
+# Libraries and Tools Used
+
+React: Main library for building the user interface.
+typescript: to can catch compilation errors.
+React Icons: For adding icons easily and consistently.
+React Hot Toast: For displaying success and error notifications.
+Custom Hooks: Custom hooks, such as useTextareaAutoHeight, are created to enhance functionality and user experience.
+
+## Setup
+
+Follow these steps to set up and run the project in your local environment:
+
+### `npm install`
+
+to install dependencies, then
 
 ### `npm start`
 

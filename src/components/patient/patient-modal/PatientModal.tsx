@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Patient, usePatientContext } from "../../PatientContext";
-import useTextareaAutoHeight from "../../utils/useTextareaAutoHeight";
-import { validateField, validateForm } from "../../utils/validations";
+import { Patient, usePatientContext } from "../../../PatientContext";
+import useTextareaAutoHeight from "../../../utils/useTextareaAutoHeight";
+import { validateField, validateForm } from "../../../utils/validations";
 import "./PatientModal.css";
 import toast from "react-hot-toast";
 import { MdAttachFile } from "react-icons/md";
-import CardButton from "../card-button/CardButton";
+import CardButton from "../../card-button/CardButton";
 import { FaRegTrashAlt } from "react-icons/fa";
 
 interface PatientModalProps {
@@ -239,7 +239,7 @@ const PatientModal: React.FC<PatientModalProps> = ({
 										Icon={FaRegTrashAlt}
 										size={15}
 										handleOnClick={handleRemovePhoto}
-										style={"icon trash-icon"}
+										className={"icon trash-icon"}
 									/>
 								)}
 								<div>

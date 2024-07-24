@@ -13,11 +13,10 @@ interface PatientListProps {
 }
 
 const PatientList = ({
-	isModalOpen,
 	setIsModalOpen,
 	setEditingPatient,
 }: PatientListProps) => {
-	const { filteredPatients, deletePatient, updatePatient, patients } =
+	const { filteredPatients, deletePatient, updatePatient } =
 		usePatientContext();
 	const [currentPage, setCurrentPage] = useState<number>(1);
 
@@ -27,8 +26,8 @@ const PatientList = ({
 	const totalItems = filteredPatients.length;
 	const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
 
-	const handleDelete = (index: number) => {
-		deletePatient(index);
+	const handleDelete = (id: string) => {
+		deletePatient(id);
 	};
 
 	const handleEdit = (newPatient: Patient) => {
@@ -48,49 +47,42 @@ const PatientList = ({
 		setIsModalOpen(true);
 	};
 
-	return (
-		<>
-			{totalItems === 0 ? (
-				<p className="no-patients-message">No patients found</p>
-			) : (
-				<div>
-					<div className="card-list">
-						{paginatedPatients.map((patient) => {
-							const originalIndex = patients.findIndex(
-								(p) => p.id === patient.id
-							);
-							return (
-								<PatientCard
-									key={patient.id}
-									patient={patient}
-									onDelete={() => handleDelete(originalIndex)}
-									onEdit={(newPatient) => handleEdit(newPatient)}
-									onClick={() => handleCardClick(patient)}
-								/>
-							);
-						})}
-					</div>
+	return totalItems === 0 ? (
+		<p className="no-patients-message">No patients found</p>
+	) : (
+		<div>
+			<div className="card-list">
+				{paginatedPatients.map((patient) => {
+					return (
+						<PatientCard
+							key={patient.id}
+							patient={patient}
+							onDelete={() => handleDelete(patient.id)}
+							onEdit={(newPatient) => handleEdit(newPatient)}
+							onClick={() => handleCardClick(patient)}
+						/>
+					);
+				})}
+			</div>
 
-					<div className="pagination-controls">
-						<button
-							onClick={() => handlePageChange(currentPage - 1)}
-							disabled={currentPage === 1}
-						>
-							Previous
-						</button>
-						<span>
-							Page {currentPage} of {totalPages}
-						</span>
-						<button
-							onClick={() => handlePageChange(currentPage + 1)}
-							disabled={currentPage === totalPages}
-						>
-							Next
-						</button>
-					</div>
-				</div>
-			)}
-		</>
+			<div className="pagination-controls">
+				<button
+					onClick={() => handlePageChange(currentPage - 1)}
+					disabled={currentPage === 1}
+				>
+					Previous
+				</button>
+				<span>
+					Page {currentPage} of {totalPages}
+				</span>
+				<button
+					onClick={() => handlePageChange(currentPage + 1)}
+					disabled={currentPage === totalPages}
+				>
+					Next
+				</button>
+			</div>
+		</div>
 	);
 };
 
