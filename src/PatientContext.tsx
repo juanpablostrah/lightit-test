@@ -10,10 +10,12 @@ interface PatientContextProps {
 	patients: Patient[];
 	filteredPatients: Patient[];
 	searchPatient: string;
+	patientCardExpandedId: string | undefined;
 	addPatient: (patient: Patient) => void;
 	updatePatient: (updatedPatient: Patient) => void;
 	deletePatient: (index: number) => void;
 	setSearchPatient: (search: string) => void;
+	setPatientCardExpandedId: (id: string | undefined) => void;
 }
 
 const PatientContext = createContext<PatientContextProps | undefined>(
@@ -37,6 +39,9 @@ export const PatientProvider: React.FC<PatientProviderProps> = ({
 	const [patients, setPatients] = useState<Patient[]>([]);
 	const [filteredPatients, setFilteredPatients] = useState<Patient[]>([]);
 	const [searchPatient, setSearchPatient] = useState<string>("");
+	const [patientCardExpandedId, setPatientCardExpandedId] = useState<
+		string | undefined
+	>();
 
 	useEffect(() => {
 		let cancel = false;
@@ -84,15 +89,6 @@ export const PatientProvider: React.FC<PatientProviderProps> = ({
 		]);
 	};
 
-	// TODO: tiene que recibir el ID, cambiar nombre a updatePatient
-	// const updatePatient = (index: number, newPatient: Patient) => {
-	// 	setPatients((prevPatients) => [
-	// 		...prevPatients.slice(0, index),
-	// 		newPatient,
-	// 		...prevPatients.slice(index + 1),
-	// 	]);
-	// };
-
 	const updatePatient = (updatedPatient: Patient) => {
 		setPatients((prevPatients) =>
 			prevPatients.map((patient) =>
@@ -115,10 +111,12 @@ export const PatientProvider: React.FC<PatientProviderProps> = ({
 				patients,
 				filteredPatients,
 				searchPatient,
+				patientCardExpandedId,
 				addPatient,
 				updatePatient,
 				deletePatient,
 				setSearchPatient,
+				setPatientCardExpandedId,
 			}}
 		>
 			{children}

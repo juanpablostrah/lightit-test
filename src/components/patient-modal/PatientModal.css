@@ -4,18 +4,6 @@
 	left: 0;
 	width: 100%;
 	height: 100%;
-	background: rgba(0, 0, 0, 0.5);
-	display: flex;
-	justify-content: center;
-	align-items: center;
-}
-
-.modal {
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
 	background-color: rgba(0, 0, 0, 0.5);
 	display: flex;
 	justify-content: center;
@@ -26,13 +14,14 @@
 .modal-content {
 	background: white;
 	padding: 2rem;
-	border-radius: 5px;
+	border-radius: 30px;
 	width: auto;
 }
 
 .modal-content label {
 	display: block;
 	margin-bottom: 1rem;
+	font-weight: 600;
 }
 
 .form-container {
@@ -42,7 +31,7 @@
 .flex {
 	display: flex;
 	align-items: center;
-	/* justify-content: space-between; */
+	justify-content: center;
 }
 
 .flex-column {
@@ -74,7 +63,7 @@
 }
 
 .label {
-	width: 140px;
+	width: 120px;
 }
 
 .input,
@@ -113,14 +102,32 @@
 	display: flex;
 	align-items: center;
 	justify-content: space-evenly;
+	margin-left: 10px;
+}
+
+.button-success {
+	color: black;
+	background-color: white;
+	border: 1px solid black;
+}
+
+.button-cancel {
+	color: white;
+	background-color: black;
+}
+
+.button-cancel:hover {
+	background-color: #333333;
 }
 
 .button-enabled {
-	color: #a421f9;
+	color: #0f0be6;
+	top: 62px;
+	position: absolute;
 }
 
 .button-enabled:hover {
-	background-color: #cdb9f2;
+	background-color: #b0b0e0;
 }
 
 .warning-message {
@@ -129,8 +136,8 @@
 }
 
 .avatar-form {
-	width: 200px;
-	height: 200px;
+	width: 150px;
+	height: 150px;
 	border-radius: 50%;
 	object-fit: cover;
 }
@@ -140,7 +147,7 @@
 }
 
 .input-container {
-	margin-bottom: 20px; /* Ajusta el valor según sea necesario */
+	margin-bottom: 20px;
 	position: relative;
 }
 
@@ -149,12 +156,13 @@
 	font-size: 12px;
 	margin-top: 5px;
 	position: absolute;
-	bottom: -20px; /* Ajusta el valor según sea necesario */
+	bottom: -20px;
 }
 
 .remove-icon {
-	position: relative !important;
-	margin-bottom: 150px;
+	position: absolute;
+	top: 2px;
+	right: 12px;
 }
 
 .upload-button {
@@ -176,6 +184,27 @@
 .title {
 	font-family: "Poppins", sans-serif;
 	font-weight: 600;
-	color: #712c9c;
+	color: black;
 	text-align: center;
+	font-size: 22px;
+}
+
+.button-container {
+	display: flex;
+	justify-content: end;
+	margin-top: 20px;
+	width: 100%;
+}
+
+.w-full {
+	width: 100%;
+}
+
+.border-image {
+	border-radius: 50%;
+	border: 2px solid darkslategray;
+}
+
+.b-m {
+	bottom: -28px;
 }

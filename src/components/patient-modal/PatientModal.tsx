@@ -20,6 +20,19 @@ type Blured<T> = Partial<{ [key in keyof T]: boolean }>;
 export const placeholderPicture =
 	"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT9cSGzVkaZvJD5722MU5A-JJt_T5JMZzotcw&s";
 
+export async function readFile(file: File): Promise<string> {
+	const reader = new FileReader();
+	return new Promise(function (resolve, reject) {
+		reader.onloadend = function () {
+			resolve(reader.result as string);
+		};
+		reader.onerror = function () {
+			reject(reader.error);
+		};
+		reader.readAsDataURL(file);
+	});
+}
+
 const PatientModal: React.FC<PatientModalProps> = ({
 	onClose,
 	onDismiss,
@@ -27,6 +40,7 @@ const PatientModal: React.FC<PatientModalProps> = ({
 }) => {
 	const [patient, setPatient] = useState(initial);
 	const [submited, setSubmited] = useState(false);
+	const [file, setFile] = useState<File | undefined>();
 	const [errors, setErrors] = useState<Errors<Patient>>(validateForm(initial));
 	const [blured, setBlured] = useState<Blured<Patient>>({});
 
@@ -47,6 +61,44 @@ const PatientModal: React.FC<PatientModalProps> = ({
 			document.removeEventListener("mousedown", handleClickOutside);
 		};
 	}, [onDismiss]);
+
+	useEffect(() => {
+		if (file) {
+			let cancel = false;
+			const load = async function () {
+				try {
+					const avatar = await readFile(file);
+					if (!cancel) {
+						setPatient((patient) => ({
+							...patient,
+							avatar,
+						}));
+						setErrors((errors) => ({
+							...errors,
+							avatar: validateField("avatar", avatar),
+						}));
+					}
+				} catch (e) {
+					toast.error("there was an error trying to read file", {
+						duration: 3000,
+					});
+					setPatient(({ avatar, ...rest }) => rest);
+					setErrors((errors) => ({
+						...errors,
+						avatar: validateField("avatar", undefined),
+					}));
+				}
+				setBlured((blured) => ({
+					...blured,
+					avatar: true,
+				}));
+			};
+			load();
+			return () => {
+				cancel = true;
+			};
+		}
+	}, [file]);
 
 	const handleInputChange = (
 		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -74,32 +126,15 @@ const PatientModal: React.FC<PatientModalProps> = ({
 	};
 
 	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		if (patient.avatar === placeholderPicture) {
-			setErrors((prevErrors) => ({
-				...prevErrors,
-				avatar: "Please select a picture",
-			}));
-		}
-		const file = e.target.files?.[0];
-		if (file) {
-			// TODO esto es asincronico hay que convertirlo a promise para manejarlo correctamente
-			const reader = new FileReader();
-			reader.onloadend = () => {
-				setPatient((prevPatient) => ({
-					...prevPatient,
-					avatar: reader.result as string,
-				}));
-			};
-			reader.readAsDataURL(file);
-			setErrors((prevErrors) => ({
-				...prevErrors,
-				avatar: "",
-			}));
-		}
+		setFile(e.target.files?.[0]);
 	};
 
 	const handleRemovePhoto = () => {
 		setPatient(({ avatar, ...prevPatient }) => prevPatient);
+		setErrors((errors) => ({
+			...errors,
+			avatar: validateField("avatar"),
+		}));
 	};
 
 	const handleAddPatient = () => {
@@ -137,7 +172,9 @@ const PatientModal: React.FC<PatientModalProps> = ({
 		<div className="modal">
 			<div className="modal-content" ref={modalRef}>
 				<h4 className="title">
-					please enter the information to create a new patient
+					{`please enter the information to ${
+						patient.id ? "update the " : "create a new "
+					}patient`}
 				</h4>
 				<form className="flex-column">
 					<div className="input-container">
@@ -180,8 +217,9 @@ const PatientModal: React.FC<PatientModalProps> = ({
 					</div>
 
 					<div className="input-container">
-						<div className="">
+						<div className="flex align-center m-left">
 							<label htmlFor="image-upload">
+								<label className="label">Photo:</label>
 								<input
 									name="avatar"
 									type="file"
@@ -189,16 +227,8 @@ const PatientModal: React.FC<PatientModalProps> = ({
 									hidden
 									onChange={handleFileChange}
 								/>
-								<button
-									className="button  button-enabled"
-									type="button"
-									onClick={handleButtonClick}
-								>
-									Upload image
-									<MdAttachFile />
-								</button>
 							</label>
-							<div className="flex m-avatar">
+							<div className="flex border-image">
 								<img
 									className="avatar-form"
 									src={patient.avatar || placeholderPicture}
@@ -209,30 +239,40 @@ const PatientModal: React.FC<PatientModalProps> = ({
 										Icon={FaRegTrashAlt}
 										size={15}
 										handleOnClick={handleRemovePhoto}
-										style={"icon remove-icon"}
+										style={"icon trash-icon"}
 									/>
 								)}
+								<div>
+									<button
+										className="button button-enabled"
+										type="button"
+										onClick={handleButtonClick}
+									>
+										Upload image
+										<MdAttachFile />
+									</button>
+								</div>
+								{(blured.avatar || submited) && errors.avatar && (
+									<p className="error-message b-m">{errors.avatar}</p>
+								)}
 							</div>
-							{(blured.avatar || submited) && errors.avatar && (
-								<p className="error-message">{errors.avatar}</p>
-							)}
 						</div>
 					</div>
 
-					<div>
+					<div className="button-container">
 						<button
 							type="button"
-							className={"button button-enabled"}
-							onClick={handleAddPatient}
-						>
-							Add patient
-						</button>
-						<button
-							type="button"
-							className={"button button-enabled"}
+							className="button button-cancel"
 							onClick={onDismiss}
 						>
 							Cancel
+						</button>
+						<button
+							type="button"
+							className="button button-success"
+							onClick={handleAddPatient}
+						>
+							{patient.id ? "Update" : "Add"} patient
 						</button>
 					</div>
 				</form>
