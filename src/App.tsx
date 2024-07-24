@@ -20,6 +20,8 @@ trigger the filter function. This means if a user types quickly, the filter func
 
 /** Used Context api to handle the global state to avoid prop drilling **/
 
+/** semantic commits **/
+
 function App() {
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 	const [editingPatient, setEditingPatient] = useState<

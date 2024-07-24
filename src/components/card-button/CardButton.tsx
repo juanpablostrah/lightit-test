@@ -4,7 +4,7 @@ interface CardButtonProps {
 	Icon?: any;
 	className?: string;
 	size?: number;
-	handleOnClick: () => void;
+	handleOnClick: (e: React.MouseEvent<HTMLElement>) => void;
 }
 
 const CardButton = ({

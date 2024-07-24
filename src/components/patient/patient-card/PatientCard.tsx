@@ -16,19 +16,26 @@ const PatientCard = ({ patient, onDelete, onClick }: PatientCardProps) => {
 	const { patientCardExpandedId, setPatientCardExpandedId } =
 		usePatientContext();
 
-	const handleEditClick = () => {
+	const handleEditClick = (e: React.MouseEvent<HTMLElement>) => {
+		e.stopPropagation();
 		onClick();
+	};
+
+	const handleDeleteClick = (e: React.MouseEvent<HTMLElement>) => {
+		e.stopPropagation();
+		onDelete();
+	};
+
+	const toggleExpand = (e: React.MouseEvent<HTMLElement>) => {
+		e.stopPropagation();
+		setPatientCardExpandedId(isExpanded ? undefined : patient.id);
 	};
 
 	const isExpanded = patientCardExpandedId === patient.id;
 
-	const toggleExpand = () => {
-		setPatientCardExpandedId(isExpanded ? undefined : patient.id);
-	};
-
 	return (
 		<div>
-			<div className="card">
+			<div className="card" onClick={toggleExpand}>
 				<div>
 					<div className="flex-evenly">
 						<img src={patient.avatar} alt={patient.name} className="avatar" />
@@ -40,7 +47,7 @@ const PatientCard = ({ patient, onDelete, onClick }: PatientCardProps) => {
 						<CardButton
 							Icon={FaRegTrashAlt}
 							size={15}
-							handleOnClick={onDelete}
+							handleOnClick={handleDeleteClick}
 							className={"icon trash-icon"}
 						/>
 
